@@ -5,6 +5,8 @@ let pointerCurrentX = 0;
 let pointerStartTime = 0;
 let isDragging = false;
 let isAnimating = false;
+let sessionQueue = [];
+let completionShown = false;
 
 const SWIPE_DISTANCE = 58;
 const SWIPE_VELOCITY = 0.38;
@@ -22,6 +24,7 @@ const languageToggle = document.getElementById("languageToggle");
 const stageLabel = document.getElementById("stageLabel");
 const counterLabel = document.getElementById("counterLabel");
 const swipeHint = document.getElementById("swipeHint");
+const completionModal = document.getElementById("completionModal");
 
 function setControlsEnabled(enabled) {
   flipCard.disabled = !enabled;
@@ -83,9 +86,29 @@ function setStageTheme(stage) {
   }
 }
 
+function startBrainSession() {
+  if (!isBrainMode) return;
+  sessionQueue = getBrainCards().map(card => card.id);
+}
+
+function getBrainSessionCard() {
+  if (!sessionQueue.length) return null;
+
+  const cardsById = new Map(getBrainCards().map(card => [card.id, card]));
+  sessionQueue = sessionQueue.filter(id => cardsById.has(id));
+
+  return sessionQueue.length ? cardsById.get(sessionQueue[0]) : null;
+}
+
+function showCompletion() {
+  if (completionShown || !completionModal) return;
+  completionShown = true;
+  completionModal.hidden = false;
+}
+
 function loadCard(excludeId = null) {
   const stats = isBrainMode ? getBrainStats() : getStats();
-  currentCard = isBrainMode ? getNextBrainCard(excludeId) : getNextCard(excludeId);
+  currentCard = isBrainMode ? getBrainSessionCard() : getNextCard(excludeId);
   if (counterLabel) {
     counterLabel.textContent = `${stats.open} offen`;
   }
@@ -107,6 +130,9 @@ function loadCard(excludeId = null) {
     setHint("Keine aktive Karte");
     flipCard.classList.add("is-flipped", "is-empty");
     setControlsEnabled(false);
+    if (isBrainMode && stats.total > 0) {
+      showCompletion();
+    }
     return;
   }
 
@@ -147,9 +173,13 @@ function answerCard(wasCorrect) {
         ...currentCard,
         stage: wasCorrect ? Math.min(MAX_STAGE + 1, currentCard.stage + 1) : 1
       });
+      if (isBrainMode) {
+        const [firstCardId, ...remainingIds] = sessionQueue;
+        sessionQueue = wasCorrect ? remainingIds : [...remainingIds, firstCardId];
+      }
     } finally {
       isAnimating = false;
-      loadCard(answeredCardId);
+      loadCard(isBrainMode ? null : answeredCardId);
     }
   }, 260);
 }
@@ -249,4 +279,5 @@ if (languageToggle) {
   });
 }
 
+startBrainSession();
 loadCard();

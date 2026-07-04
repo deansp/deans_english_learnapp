@@ -12,7 +12,7 @@ knownCards.textContent = stats.known;
 
 function updateBrainStatus() {
   const currentBrainStats = getBrainStats();
-  brainStatus.textContent = `${currentBrainStats.total} in Deans Brain`;
+  brainStatus.textContent = `Aktiv werden ${currentBrainStats.total} Vokabeln gelernt`;
 }
 
 addBrainCards.addEventListener("click", () => {
@@ -22,12 +22,12 @@ addBrainCards.addEventListener("click", () => {
   if (result.added === 0) {
     brainStatus.textContent = "Alle Vokabeln sind schon drin.";
   } else {
-    brainStatus.textContent = `+${result.added} hinzugefügt, ${result.total} in Deans Brain`;
+    brainStatus.textContent = `Aktiv werden ${result.total} Vokabeln gelernt`;
   }
 });
 
 if (brainStats.total === 0) {
-  brainStatus.textContent = "Noch leer";
+  brainStatus.textContent = "Aktiv werden 0 Vokabeln gelernt";
 } else {
   updateBrainStatus();
 }
