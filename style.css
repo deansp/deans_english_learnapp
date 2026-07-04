@@ -830,7 +830,12 @@ body.stage-three .card-back {
   padding: 16px 17px;
   border: 1px solid rgba(94, 74, 55, 0.18);
   border-radius: 8px 20px 9px 22px;
-  background: rgba(255, 250, 240, 0.92);
+  background:
+    linear-gradient(rgba(255, 250, 242, 0.74), rgba(255, 250, 242, 0.74)),
+    url("assets/watercolor-bg.png"),
+    rgba(255, 250, 240, 0.92);
+  background-position: center;
+  background-size: cover;
   box-shadow: 10px 12px 0 rgba(96, 80, 65, 0.1);
   color: #4f4a42;
   backdrop-filter: blur(7px);

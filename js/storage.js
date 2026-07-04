@@ -1,6 +1,7 @@
 const STORAGE_KEY = "english-cards";
 const DEFAULT_SEED_KEY = "english-cards-b1-defaults-added";
 const BRAIN_KEY = "deans-brain-card-ids";
+const INITIAL_BRAIN_KEY = "deans-brain-initial-cards-added";
 const MAX_STAGE = 3;
 const DONE_STAGE = MAX_STAGE + 1;
 
@@ -744,12 +745,26 @@ function saveBrainIds(ids) {
   localStorage.setItem(BRAIN_KEY, JSON.stringify([...new Set(ids)]));
 }
 
+function ensureInitialBrainCards(cards = loadCards()) {
+  if (localStorage.getItem(INITIAL_BRAIN_KEY)) return;
+
+  const activeCards = cards.filter(card => card.stage <= MAX_STAGE);
+  const brainIds = getBrainIds();
+
+  if (brainIds.length === 0 && activeCards.length > 0) {
+    saveBrainIds(activeCards.slice(0, 3).map(card => card.id));
+  }
+
+  localStorage.setItem(INITIAL_BRAIN_KEY, "true");
+}
+
 function removeFromBrain(id) {
   saveBrainIds(getBrainIds().filter(brainId => brainId !== id));
 }
 
 function getBrainCards() {
   const cards = loadCards();
+  ensureInitialBrainCards(cards);
   const cardsById = new Map(cards.map(card => [card.id, card]));
   const activeBrainIds = getBrainIds().filter(id => {
     const card = cardsById.get(id);
