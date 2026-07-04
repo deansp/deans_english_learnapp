@@ -25,9 +25,6 @@ const answer = document.getElementById("answer");
 const frontExample = document.getElementById("frontExample");
 const backExample = document.getElementById("backExample");
 const languageToggle = document.getElementById("languageToggle");
-const stageLabel = document.getElementById("stageLabel");
-const counterLabel = document.getElementById("counterLabel");
-const swipeHint = document.getElementById("swipeHint");
 const completionModal = document.getElementById("completionModal");
 const infoButton = document.getElementById("infoButton");
 const infoPanel = document.getElementById("infoPanel");
@@ -39,12 +36,6 @@ function setControlsEnabled(enabled) {
 
   if (infoButton) {
     infoButton.disabled = !enabled;
-  }
-}
-
-function setHint(text) {
-  if (swipeHint) {
-    swipeHint.textContent = text;
   }
 }
 
@@ -184,9 +175,6 @@ function showCompletion() {
 function loadCard(excludeId = null) {
   const stats = isLearnedMode ? getLearnedStats() : (isBrainMode ? getBrainStats() : getStats());
   currentCard = isSessionMode ? getSessionCard() : getNextCard(excludeId);
-  if (counterLabel) {
-    counterLabel.textContent = `${stats.open} offen`;
-  }
   resetCardPosition();
   closeInfoPanel();
 
@@ -200,10 +188,6 @@ function loadCard(excludeId = null) {
       : "Setze Karten im Wörterbuch zurück, wenn du weiter üben möchtest.";
     setExample(frontExample, "");
     setExample(backExample, "");
-    if (stageLabel) {
-      stageLabel.textContent = "Bereit";
-    }
-    setHint("Keine aktive Karte");
     flipCard.classList.add("is-flipped", "is-empty");
     setControlsEnabled(false);
     if (isSessionMode && sessionStartedWithCards) {
@@ -221,19 +205,12 @@ function loadCard(excludeId = null) {
   setExample(backExample, startsWithEnglish ? currentCard.germanExample : currentCard.englishExample);
   renderPracticeExamples(currentCard);
   fitVisibleCardText();
-  if (stageLabel) {
-    stageLabel.textContent = `Stufe ${currentCard.stage} von ${MAX_STAGE}`;
-  }
-  setHint("Tippen zum Umdrehen");
   setControlsEnabled(true);
 }
 
 function flipCurrentCard() {
   if (!currentCard || isAnimating) return;
   flipCard.classList.toggle("is-flipped");
-  setHint(flipCard.classList.contains("is-flipped")
-    ? "Links falsch, rechts richtig"
-    : "Tippen zum Umdrehen");
 }
 
 function answerCard(wasCorrect) {
@@ -243,7 +220,6 @@ function answerCard(wasCorrect) {
   isAnimating = true;
   flipCard.style.transform = "";
   flipCard.classList.add(wasCorrect ? "swipe-right" : "swipe-left");
-  setHint(wasCorrect ? "Richtig" : "Falsch");
 
   window.setTimeout(() => {
     try {
@@ -314,11 +290,6 @@ flipCard.addEventListener("pointermove", event => {
   flipCard.style.transform = `translateX(${pullX}px) rotate(${rotation}deg)`;
   flipCard.classList.toggle("is-pulling-right", deltaX > HINT_DISTANCE);
   flipCard.classList.toggle("is-pulling-left", deltaX < -HINT_DISTANCE);
-  setHint(deltaX > HINT_DISTANCE
-    ? "Loslassen: richtig"
-    : deltaX < -HINT_DISTANCE
-      ? "Loslassen: falsch"
-      : "Tippen oder wischen");
 });
 
 flipCard.addEventListener("pointerup", event => {
@@ -346,10 +317,6 @@ flipCard.addEventListener("pointerup", event => {
 
   if (Math.abs(deltaX) < TAP_DISTANCE && Math.abs(deltaY) < TAP_DISTANCE) {
     flipCurrentCard();
-  } else {
-    setHint(flipCard.classList.contains("is-flipped")
-      ? "Links falsch, rechts richtig"
-      : "Tippen zum Umdrehen");
   }
 
   window.setTimeout(() => {

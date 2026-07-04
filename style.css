@@ -502,21 +502,12 @@ body.stage-three .page-head::before {
   overflow: visible;
 }
 
-.progress-row,
 .toolbar,
 .word-row,
-.row-actions,
-.button-row {
+.row-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.progress-row {
-  justify-content: space-between;
-  color: #75695d;
-  font-size: 0.95rem;
-  font-weight: 700;
 }
 
 .swipe-zone {
@@ -525,39 +516,6 @@ body.stage-three .page-head::before {
   place-items: center;
   min-height: clamp(430px, 68vh, 590px);
   padding: 18px 0 8px;
-}
-
-.swipe-hint {
-  position: absolute;
-  top: 0;
-  z-index: 2;
-  padding: 7px 12px;
-  border: 1px solid #d4b89f;
-  border-radius: 999px 14px 999px 16px;
-  background: #fff6df;
-  color: #75695d;
-  font-size: 0.9rem;
-  font-weight: 700;
-  box-shadow: 4px 5px 0 rgba(96, 80, 65, 0.1);
-  pointer-events: none;
-}
-
-body.stage-one .swipe-hint {
-  background: #f8e1d8;
-  border-color: #d3a092;
-  color: #805046;
-}
-
-body.stage-two .swipe-hint {
-  background: #f8edc8;
-  border-color: #d2b46c;
-  color: #75613a;
-}
-
-body.stage-three .swipe-hint {
-  background: #e5efd9;
-  border-color: #9eb38f;
-  color: #526849;
 }
 
 .flip-card {
@@ -879,14 +837,6 @@ body.stage-three .card-back {
 
 .practice-examples p {
   margin: 0;
-}
-
-.button-row {
-  margin-top: 12px;
-}
-
-.button-row .btn {
-  width: 100%;
 }
 
 .split {

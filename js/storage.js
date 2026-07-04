@@ -888,11 +888,6 @@ function getNextCard(excludeId = null) {
   return pickNextFromActiveCards(active, excludeId);
 }
 
-function getNextBrainCard(excludeId = null) {
-  const active = getBrainCards().filter(card => card.stage <= MAX_STAGE);
-  return pickNextFromActiveCards(active, excludeId);
-}
-
 function getLearnedCards() {
   return loadCards().filter(card => card.stage > MAX_STAGE);
 }
