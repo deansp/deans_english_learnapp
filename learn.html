@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernen</title>
+<link rel="stylesheet" href="style.css?v=18">
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="study-top">
+  <a class="back-link study-home" href="index.html">Home</a>
+  <label class="language-switch" aria-label="Vorderseite der Karte wählen">
+    <span>DE</span>
+    <input id="languageToggle" type="checkbox" checked>
+    <span class="switch-track" aria-hidden="true"></span>
+    <span>EN</span>
+  </label>
+</div>
+
+<main class="study-card">
+  <div class="swipe-zone" aria-live="polite">
+    <button id="flipCard" class="flip-card" type="button" aria-label="Karte umdrehen">
+      <span class="card-face card-front">
+        <span class="answer-wrap">
+          <span id="word" class="word">Lade...</span>
+          <span id="frontExample" class="example-sentence"></span>
+        </span>
+      </span>
+      <span class="card-face card-back">
+        <span class="answer-wrap">
+          <span id="answer" class="answer"></span>
+          <span id="backExample" class="example-sentence"></span>
+        </span>
+      </span>
+    </button>
+  </div>
+</main>
+
+<script src="js/storage.js?v=18"></script>
+<script src="js/learn.js?v=18"></script>
+
+</body>
+</html>

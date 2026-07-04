@@ -1,0 +1,19 @@
+EnglishCards/
+│
+├── index.html          ← Startseite
+├── learn.html          ← Lernen
+├── add.html            ← Neue Vokabel
+├── dictionary.html     ← Alle Vokabeln
+│
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── storage.js      ← Speichern/Laden
+│   ├── learn.js        ← Lernlogik
+│   ├── add.js          ← Neue Vokabeln
+│   ├── dictionary.js   ← Wörterbuch
+│   └── app.js          ← Gemeinsame Funktionen
+│
+└── assets/
+    └── logo.png

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Cards</title>
+<link rel="stylesheet" href="style.css?v=18">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="hero">
+  <p class="eyebrow">Dein kleiner Vokabeltrainer</p>
+  <h1>English Cards</h1>
+  <p class="intro">Sammle neue Wörter, wiederhole sie als Karten und sieh im Wörterbuch, was schon sitzt.</p>
+</header>
+
+<section class="stats-grid" aria-label="Lernstand">
+  <div class="stat">
+    <span id="totalCards">0</span>
+    <small>Vokabeln</small>
+  </div>
+  <div class="stat">
+    <span id="openCards">0</span>
+    <small>zu lernen</small>
+  </div>
+  <div class="stat">
+    <span id="knownCards">0</span>
+    <small>sicher</small>
+  </div>
+</section>
+
+<nav class="actions" aria-label="Hauptnavigation">
+  <a class="btn" href="learn.html">Lernen</a>
+  <div class="brain-actions">
+    <a class="btn secondary" href="learn.html?deck=brain">Deans Brain</a>
+    <button class="btn secondary" id="addBrainCards" type="button">+3 Vokabeln</button>
+  </div>
+  <p id="brainStatus" class="brain-status">0 in Deans Brain</p>
+  <a class="text-link" href="add.html">Neue Vokabel</a>
+  <a class="text-link" href="dictionary.html">Wörterbuch</a>
+</nav>
+
+</div>
+
+<script src="js/storage.js?v=18"></script>
+<script src="js/app.js?v=18"></script>
+</body>
+</html>

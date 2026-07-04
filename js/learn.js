@@ -1,0 +1,252 @@
+let currentCard = null;
+let pointerStartX = 0;
+let pointerStartY = 0;
+let pointerCurrentX = 0;
+let pointerStartTime = 0;
+let isDragging = false;
+let isAnimating = false;
+
+const SWIPE_DISTANCE = 58;
+const SWIPE_VELOCITY = 0.38;
+const HINT_DISTANCE = 20;
+const TAP_DISTANCE = 12;
+const deckMode = new URLSearchParams(window.location.search).get("deck");
+const isBrainMode = deckMode === "brain";
+
+const flipCard = document.getElementById("flipCard");
+const word = document.getElementById("word");
+const answer = document.getElementById("answer");
+const frontExample = document.getElementById("frontExample");
+const backExample = document.getElementById("backExample");
+const languageToggle = document.getElementById("languageToggle");
+const stageLabel = document.getElementById("stageLabel");
+const counterLabel = document.getElementById("counterLabel");
+const swipeHint = document.getElementById("swipeHint");
+
+function setControlsEnabled(enabled) {
+  flipCard.disabled = !enabled;
+}
+
+function setHint(text) {
+  if (swipeHint) {
+    swipeHint.textContent = text;
+  }
+}
+
+function getFrontLanguage() {
+  return languageToggle && !languageToggle.checked ? "de" : "en";
+}
+
+function setExample(element, text) {
+  if (!element) return;
+  element.textContent = text || "";
+  element.hidden = !text;
+}
+
+function loadFrontLanguage() {
+  const savedLanguage = localStorage.getItem("english-cards-front-language");
+
+  if (languageToggle) {
+    languageToggle.checked = savedLanguage !== "de";
+  }
+}
+
+function saveFrontLanguage() {
+  localStorage.setItem("english-cards-front-language", getFrontLanguage());
+}
+
+function resetCardPosition() {
+  flipCard.style.transform = "";
+  flipCard.classList.remove(
+    "is-flipped",
+    "swipe-left",
+    "swipe-right",
+    "is-empty",
+    "is-dragging",
+    "is-pulling-left",
+    "is-pulling-right",
+    "is-returning"
+  );
+}
+
+function setStageTheme(stage) {
+  document.body.classList.remove("stage-one", "stage-two", "stage-three", "stage-done");
+
+  if (stage === 1) {
+    document.body.classList.add("stage-one");
+  } else if (stage === 2) {
+    document.body.classList.add("stage-two");
+  } else if (stage >= 3) {
+    document.body.classList.add("stage-three");
+  } else {
+    document.body.classList.add("stage-done");
+  }
+}
+
+function loadCard(excludeId = null) {
+  const stats = isBrainMode ? getBrainStats() : getStats();
+  currentCard = isBrainMode ? getNextBrainCard(excludeId) : getNextCard(excludeId);
+  if (counterLabel) {
+    counterLabel.textContent = `${stats.open} offen`;
+  }
+  resetCardPosition();
+
+  if (!currentCard) {
+    setStageTheme(0);
+    word.textContent = stats.total === 0
+      ? (isBrainMode ? "Deans Brain ist leer" : "Noch keine Vokabeln")
+      : "Alles gelernt";
+    answer.textContent = stats.total === 0
+      ? (isBrainMode ? "Füge auf der Startseite drei Vokabeln hinzu." : "Füge zuerst eine Vokabel hinzu.")
+      : "Setze Karten im Wörterbuch zurück, wenn du weiter üben möchtest.";
+    setExample(frontExample, "");
+    setExample(backExample, "");
+    if (stageLabel) {
+      stageLabel.textContent = "Bereit";
+    }
+    setHint("Keine aktive Karte");
+    flipCard.classList.add("is-flipped", "is-empty");
+    setControlsEnabled(false);
+    return;
+  }
+
+  setStageTheme(currentCard.stage);
+  const startsWithEnglish = getFrontLanguage() === "en";
+
+  word.textContent = startsWithEnglish ? currentCard.english : currentCard.german;
+  answer.textContent = startsWithEnglish ? currentCard.german : currentCard.english;
+  setExample(frontExample, startsWithEnglish ? currentCard.englishExample : currentCard.germanExample);
+  setExample(backExample, startsWithEnglish ? currentCard.germanExample : currentCard.englishExample);
+  if (stageLabel) {
+    stageLabel.textContent = `Stufe ${currentCard.stage} von ${MAX_STAGE}`;
+  }
+  setHint("Tippen zum Umdrehen");
+  setControlsEnabled(true);
+}
+
+function flipCurrentCard() {
+  if (!currentCard || isAnimating) return;
+  flipCard.classList.toggle("is-flipped");
+  setHint(flipCard.classList.contains("is-flipped")
+    ? "Links falsch, rechts richtig"
+    : "Tippen zum Umdrehen");
+}
+
+function answerCard(wasCorrect) {
+  if (!currentCard || isAnimating) return;
+
+  const answeredCardId = currentCard.id;
+  isAnimating = true;
+  flipCard.style.transform = "";
+  flipCard.classList.add(wasCorrect ? "swipe-right" : "swipe-left");
+  setHint(wasCorrect ? "Richtig" : "Falsch");
+
+  window.setTimeout(() => {
+    try {
+      updateCard({
+        ...currentCard,
+        stage: wasCorrect ? Math.min(MAX_STAGE + 1, currentCard.stage + 1) : 1
+      });
+    } finally {
+      isAnimating = false;
+      loadCard(answeredCardId);
+    }
+  }, 260);
+}
+
+flipCard.addEventListener("pointerdown", event => {
+  if (!currentCard || isAnimating) return;
+  pointerStartX = event.clientX;
+  pointerStartY = event.clientY;
+  pointerCurrentX = event.clientX;
+  pointerStartTime = Date.now();
+  isDragging = true;
+  flipCard.classList.add("is-dragging");
+  flipCard.classList.remove("is-returning");
+
+  if (flipCard.setPointerCapture) {
+    flipCard.setPointerCapture(event.pointerId);
+  }
+});
+
+flipCard.addEventListener("pointermove", event => {
+  if (!isDragging || !currentCard || isAnimating) return;
+
+  pointerCurrentX = event.clientX;
+  const deltaX = pointerCurrentX - pointerStartX;
+  const deltaY = event.clientY - pointerStartY;
+  const pullX = deltaX * 1.08;
+  const rotation = Math.max(-13, Math.min(13, deltaX / 15));
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    event.preventDefault();
+  }
+
+  flipCard.style.transform = `translateX(${pullX}px) rotate(${rotation}deg)`;
+  flipCard.classList.toggle("is-pulling-right", deltaX > HINT_DISTANCE);
+  flipCard.classList.toggle("is-pulling-left", deltaX < -HINT_DISTANCE);
+  setHint(deltaX > HINT_DISTANCE
+    ? "Loslassen: richtig"
+    : deltaX < -HINT_DISTANCE
+      ? "Loslassen: falsch"
+      : "Tippen oder wischen");
+});
+
+flipCard.addEventListener("pointerup", event => {
+  if (!isDragging || !currentCard || isAnimating) return;
+
+  const deltaX = event.clientX - pointerStartX;
+  const deltaY = event.clientY - pointerStartY;
+  const elapsed = Math.max(1, Date.now() - pointerStartTime);
+  const velocity = Math.abs(deltaX) / elapsed;
+  const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
+
+  isDragging = false;
+  flipCard.classList.remove("is-dragging", "is-pulling-left", "is-pulling-right");
+  if (flipCard.releasePointerCapture) {
+    flipCard.releasePointerCapture(event.pointerId);
+  }
+
+  if (isHorizontal && (Math.abs(deltaX) > SWIPE_DISTANCE || velocity > SWIPE_VELOCITY)) {
+    answerCard(deltaX > 0);
+    return;
+  }
+
+  flipCard.classList.add("is-returning");
+  flipCard.style.transform = "";
+
+  if (Math.abs(deltaX) < TAP_DISTANCE && Math.abs(deltaY) < TAP_DISTANCE) {
+    flipCurrentCard();
+  } else {
+    setHint(flipCard.classList.contains("is-flipped")
+      ? "Links falsch, rechts richtig"
+      : "Tippen zum Umdrehen");
+  }
+
+  window.setTimeout(() => {
+    flipCard.classList.remove("is-returning");
+  }, 180);
+});
+
+flipCard.addEventListener("pointercancel", () => {
+  isDragging = false;
+  flipCard.classList.add("is-returning");
+  flipCard.style.transform = "";
+  flipCard.classList.remove("is-dragging", "is-pulling-left", "is-pulling-right");
+  window.setTimeout(() => {
+    flipCard.classList.remove("is-returning");
+  }, 180);
+});
+
+if (languageToggle) {
+  loadFrontLanguage();
+  languageToggle.addEventListener("change", () => {
+    saveFrontLanguage();
+
+    if (currentCard) {
+      loadCard();
+    }
+  });
+}
+
+loadCard();

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wörterbuch</title>
+<link rel="stylesheet" href="style.css?v=18">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="page-head">
+  <a class="back-link" href="index.html">Home</a>
+  <h1>Wörterbuch</h1>
+  <p>Durchsuche deine Vokabeln, setze Karten zurück oder entferne sie.</p>
+</header>
+
+<div class="toolbar">
+  <input id="search" placeholder="Suchen..." autocomplete="off">
+  <button class="btn secondary compact" id="resetAll" type="button">Alle zurücksetzen</button>
+</div>
+
+<p id="emptyState" class="empty" hidden>Noch keine Vokabeln gespeichert.</p>
+<div id="list"></div>
+
+</div>
+
+<script src="js/storage.js?v=18"></script>
+<script src="js/dictionary.js?v=18"></script>
+
+</body>
+</html>
