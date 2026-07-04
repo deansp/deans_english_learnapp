@@ -387,9 +387,21 @@ function saveBrainIds(ids) {
   localStorage.setItem(BRAIN_KEY, JSON.stringify([...new Set(ids)]));
 }
 
+function removeFromBrain(id) {
+  saveBrainIds(getBrainIds().filter(brainId => brainId !== id));
+}
+
 function getBrainCards() {
-  const brainIds = new Set(getBrainIds());
-  return loadCards().filter(card => brainIds.has(card.id));
+  const cards = loadCards();
+  const cardsById = new Map(cards.map(card => [card.id, card]));
+  const activeBrainIds = getBrainIds().filter(id => {
+    const card = cardsById.get(id);
+    return card && card.stage <= MAX_STAGE;
+  });
+
+  saveBrainIds(activeBrainIds);
+  const brainIds = new Set(activeBrainIds);
+  return cards.filter(card => brainIds.has(card.id));
 }
 
 function getBrainStats() {
@@ -405,7 +417,7 @@ function addRandomCardsToBrain(count = 3) {
   const cards = loadCards();
   const brainIds = getBrainIds();
   const brainIdSet = new Set(brainIds);
-  const availableCards = cards.filter(card => !brainIdSet.has(card.id));
+  const availableCards = cards.filter(card => card.stage <= MAX_STAGE && !brainIdSet.has(card.id));
   const shuffledCards = [...availableCards].sort(() => Math.random() - 0.5);
   const selectedCards = shuffledCards.slice(0, count);
 
@@ -453,16 +465,22 @@ function updateCard(updatedCard) {
   const index = cards.findIndex(card => card.id === updatedCard.id);
 
   if (index !== -1) {
-    cards[index] = {
+    const normalizedCard = {
       ...normalizeCard(updatedCard),
       updatedAt: new Date().toISOString()
     };
+    cards[index] = normalizedCard;
     saveCards(cards);
+
+    if (normalizedCard.stage > MAX_STAGE) {
+      removeFromBrain(normalizedCard.id);
+    }
   }
 }
 
 function deleteCard(id) {
   saveCards(loadCards().filter(card => card.id !== id));
+  removeFromBrain(id);
 }
 
 function resetCard(id) {
@@ -501,6 +519,19 @@ function getNextCard(excludeId = null) {
 function getNextBrainCard(excludeId = null) {
   const active = getBrainCards().filter(card => card.stage <= MAX_STAGE);
   return pickNextFromActiveCards(active, excludeId);
+}
+
+function getLearnedCards() {
+  return loadCards().filter(card => card.stage > MAX_STAGE);
+}
+
+function getLearnedStats() {
+  const cards = getLearnedCards();
+  return {
+    total: cards.length,
+    open: cards.length,
+    known: cards.length
+  };
 }
 
 function getStats() {

@@ -6,6 +6,7 @@ let pointerStartTime = 0;
 let isDragging = false;
 let isAnimating = false;
 let sessionQueue = [];
+let sessionStartedWithCards = false;
 let completionShown = false;
 
 const SWIPE_DISTANCE = 58;
@@ -14,6 +15,8 @@ const HINT_DISTANCE = 20;
 const TAP_DISTANCE = 12;
 const deckMode = new URLSearchParams(window.location.search).get("deck");
 const isBrainMode = deckMode === "brain";
+const isLearnedMode = deckMode === "learned";
+const isSessionMode = isBrainMode || isLearnedMode;
 
 const flipCard = document.getElementById("flipCard");
 const word = document.getElementById("word");
@@ -87,14 +90,22 @@ function setStageTheme(stage) {
 }
 
 function startBrainSession() {
-  if (!isBrainMode) return;
-  sessionQueue = getBrainCards().map(card => card.id);
+  if (isBrainMode) {
+    sessionQueue = getBrainCards().map(card => card.id);
+  }
+
+  if (isLearnedMode) {
+    sessionQueue = getLearnedCards().map(card => card.id);
+  }
+
+  sessionStartedWithCards = sessionQueue.length > 0;
 }
 
-function getBrainSessionCard() {
+function getSessionCard() {
   if (!sessionQueue.length) return null;
 
-  const cardsById = new Map(getBrainCards().map(card => [card.id, card]));
+  const sessionCards = isLearnedMode ? getLearnedCards() : getBrainCards();
+  const cardsById = new Map(sessionCards.map(card => [card.id, card]));
   sessionQueue = sessionQueue.filter(id => cardsById.has(id));
 
   return sessionQueue.length ? cardsById.get(sessionQueue[0]) : null;
@@ -107,8 +118,8 @@ function showCompletion() {
 }
 
 function loadCard(excludeId = null) {
-  const stats = isBrainMode ? getBrainStats() : getStats();
-  currentCard = isBrainMode ? getBrainSessionCard() : getNextCard(excludeId);
+  const stats = isLearnedMode ? getLearnedStats() : (isBrainMode ? getBrainStats() : getStats());
+  currentCard = isSessionMode ? getSessionCard() : getNextCard(excludeId);
   if (counterLabel) {
     counterLabel.textContent = `${stats.open} offen`;
   }
@@ -117,10 +128,10 @@ function loadCard(excludeId = null) {
   if (!currentCard) {
     setStageTheme(0);
     word.textContent = stats.total === 0
-      ? (isBrainMode ? "Deans Brain ist leer" : "Noch keine Vokabeln")
+      ? (isLearnedMode ? "Noch keine gelernten Vokabeln" : (isBrainMode ? "Deans Brain ist leer" : "Noch keine Vokabeln"))
       : "Alles gelernt";
     answer.textContent = stats.total === 0
-      ? (isBrainMode ? "Füge auf der Startseite drei Vokabeln hinzu." : "Füge zuerst eine Vokabel hinzu.")
+      ? (isLearnedMode ? "Lerne erst ein paar Wörter fertig." : (isBrainMode ? "Füge auf der Startseite drei Vokabeln hinzu." : "Füge zuerst eine Vokabel hinzu."))
       : "Setze Karten im Wörterbuch zurück, wenn du weiter üben möchtest.";
     setExample(frontExample, "");
     setExample(backExample, "");
@@ -130,7 +141,7 @@ function loadCard(excludeId = null) {
     setHint("Keine aktive Karte");
     flipCard.classList.add("is-flipped", "is-empty");
     setControlsEnabled(false);
-    if (isBrainMode && stats.total > 0) {
+    if (isSessionMode && sessionStartedWithCards) {
       showCompletion();
     }
     return;
@@ -171,15 +182,15 @@ function answerCard(wasCorrect) {
     try {
       updateCard({
         ...currentCard,
-        stage: wasCorrect ? Math.min(MAX_STAGE + 1, currentCard.stage + 1) : 1
+        stage: isLearnedMode && wasCorrect ? DONE_STAGE : (wasCorrect ? Math.min(DONE_STAGE, currentCard.stage + 1) : 1)
       });
-      if (isBrainMode) {
+      if (isSessionMode) {
         const [firstCardId, ...remainingIds] = sessionQueue;
-        sessionQueue = wasCorrect ? remainingIds : [...remainingIds, firstCardId];
+        sessionQueue = isLearnedMode || wasCorrect ? remainingIds : [...remainingIds, firstCardId];
       }
     } finally {
       isAnimating = false;
-      loadCard(isBrainMode ? null : answeredCardId);
+      loadCard(isSessionMode ? null : answeredCardId);
     }
   }, 260);
 }
