@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lernen</title>
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 
 <body>
@@ -23,20 +23,29 @@
 
 <main class="study-card">
   <div class="swipe-zone" aria-live="polite">
-    <button id="flipCard" class="flip-card" type="button" aria-label="Karte umdrehen">
-      <span class="card-face card-front">
-        <span class="answer-wrap">
-          <span id="word" class="word">Lade...</span>
-          <span id="frontExample" class="example-sentence"></span>
+    <div class="card-shell">
+      <button id="flipCard" class="flip-card" type="button" aria-label="Karte umdrehen">
+        <span class="card-face card-front">
+          <span class="answer-wrap">
+            <span id="word" class="word">Lade...</span>
+            <span id="frontExample" class="example-sentence"></span>
+          </span>
         </span>
-      </span>
-      <span class="card-face card-back">
-        <span class="answer-wrap">
-          <span id="answer" class="answer"></span>
-          <span id="backExample" class="example-sentence"></span>
+        <span class="card-face card-back">
+          <span class="answer-wrap">
+            <span id="answer" class="answer"></span>
+            <span id="backExample" class="example-sentence"></span>
+          </span>
         </span>
-      </span>
-    </button>
+      </button>
+      <button id="infoButton" class="card-info-button" type="button" aria-label="Beispielsätze anzeigen" aria-expanded="false">i</button>
+      <section id="infoPanel" class="example-panel" aria-label="Beispielsätze" hidden>
+        <div class="example-panel-head">
+          <button id="closeInfo" class="example-panel-close" type="button" aria-label="Beispielsätze schließen">×</button>
+        </div>
+        <div id="practiceExamples" class="practice-examples"></div>
+      </section>
+    </div>
   </div>
 </main>
 
@@ -49,8 +58,8 @@
   </div>
 </div>
 
-<script src="js/storage.js?v=27"></script>
-<script src="js/learn.js?v=27"></script>
+<script src="js/storage.js?v=29"></script>
+<script src="js/learn.js?v=29"></script>
 
 </body>
 </html>

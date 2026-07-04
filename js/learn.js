@@ -29,9 +29,17 @@ const stageLabel = document.getElementById("stageLabel");
 const counterLabel = document.getElementById("counterLabel");
 const swipeHint = document.getElementById("swipeHint");
 const completionModal = document.getElementById("completionModal");
+const infoButton = document.getElementById("infoButton");
+const infoPanel = document.getElementById("infoPanel");
+const closeInfo = document.getElementById("closeInfo");
+const practiceExamples = document.getElementById("practiceExamples");
 
 function setControlsEnabled(enabled) {
   flipCard.disabled = !enabled;
+
+  if (infoButton) {
+    infoButton.disabled = !enabled;
+  }
 }
 
 function setHint(text) {
@@ -68,6 +76,41 @@ function fitVisibleCardText() {
     fitCardText(word);
     fitCardText(answer);
   });
+}
+
+function closeInfoPanel() {
+  if (!infoPanel || !infoButton) return;
+  infoPanel.hidden = true;
+  infoButton.setAttribute("aria-expanded", "false");
+}
+
+function renderPracticeExamples(card) {
+  if (!practiceExamples) return;
+
+  practiceExamples.innerHTML = "";
+
+  const examples = card && Array.isArray(card.practiceExamples)
+    ? card.practiceExamples
+    : [];
+  const sentences = examples.length ? examples : ["Für diese Vokabel gibt es noch keine extra Beispielsätze."];
+
+  sentences.forEach(sentence => {
+    const item = document.createElement("p");
+    item.textContent = sentence;
+    practiceExamples.appendChild(item);
+  });
+}
+
+function toggleInfoPanel() {
+  if (!currentCard || !infoPanel || !infoButton) return;
+
+  const shouldOpen = infoPanel.hidden;
+  if (shouldOpen) {
+    renderPracticeExamples(currentCard);
+  }
+
+  infoPanel.hidden = !shouldOpen;
+  infoButton.setAttribute("aria-expanded", String(shouldOpen));
 }
 
 function loadFrontLanguage() {
@@ -145,6 +188,7 @@ function loadCard(excludeId = null) {
     counterLabel.textContent = `${stats.open} offen`;
   }
   resetCardPosition();
+  closeInfoPanel();
 
   if (!currentCard) {
     setStageTheme(0);
@@ -175,6 +219,7 @@ function loadCard(excludeId = null) {
   answer.textContent = startsWithEnglish ? currentCard.german : currentCard.english;
   setExample(frontExample, startsWithEnglish ? currentCard.englishExample : currentCard.germanExample);
   setExample(backExample, startsWithEnglish ? currentCard.germanExample : currentCard.englishExample);
+  renderPracticeExamples(currentCard);
   fitVisibleCardText();
   if (stageLabel) {
     stageLabel.textContent = `Stufe ${currentCard.stage} von ${MAX_STAGE}`;
@@ -231,6 +276,27 @@ flipCard.addEventListener("pointerdown", event => {
     flipCard.setPointerCapture(event.pointerId);
   }
 });
+
+if (infoButton) {
+  infoButton.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleInfoPanel();
+  });
+}
+
+if (closeInfo) {
+  closeInfo.addEventListener("click", event => {
+    event.stopPropagation();
+    closeInfoPanel();
+    infoButton?.focus();
+  });
+}
+
+if (infoPanel) {
+  infoPanel.addEventListener("click", event => {
+    event.stopPropagation();
+  });
+}
 
 flipCard.addEventListener("pointermove", event => {
   if (!isDragging || !currentCard || isAnimating) return;

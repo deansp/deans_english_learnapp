@@ -307,6 +307,359 @@ const DEFAULT_B1_CARDS = [
   }
 ];
 
+const PRACTICE_EXAMPLES = {
+  achieve: [
+    "I can achieve my plan today.",
+    "She wants to achieve a good result.",
+    "We can achieve more together.",
+    "He worked hard to achieve success.",
+    "You will achieve your goal soon."
+  ],
+  avoid: [
+    "I avoid loud places when I study.",
+    "Please avoid this small mistake.",
+    "She tries to avoid stress.",
+    "We should avoid the busy road.",
+    "He avoids sugar in the evening."
+  ],
+  behaviour: [
+    "His behaviour was very kind.",
+    "Good behaviour helps the whole class.",
+    "Her behaviour changed today.",
+    "This behaviour is not helpful.",
+    "I noticed his calm behaviour."
+  ],
+  benefit: [
+    "This app has one clear benefit.",
+    "Fresh air is a real benefit.",
+    "The main benefit is more practice.",
+    "I see the benefit now.",
+    "Sleep has a big benefit for learning."
+  ],
+  challenge: [
+    "This exercise is a small challenge.",
+    "Speaking English is a good challenge.",
+    "I like a new challenge.",
+    "The test was a fair challenge.",
+    "We can solve this challenge."
+  ],
+  compare: [
+    "I compare two answers.",
+    "She compares the prices.",
+    "We compare our ideas.",
+    "Please compare these sentences.",
+    "He compares the two pictures."
+  ],
+  confident: [
+    "I feel confident today.",
+    "She sounds confident in English.",
+    "Be confident and speak slowly.",
+    "He became more confident.",
+    "A short practice makes me confident."
+  ],
+  consider: [
+    "Please consider this idea.",
+    "I consider taking a break.",
+    "We should consider another plan.",
+    "She will consider the offer.",
+    "Consider your answer carefully."
+  ],
+  create: [
+    "I create a new sentence.",
+    "She creates a simple plan.",
+    "We create a nice app.",
+    "He wants to create music.",
+    "You can create your own example."
+  ],
+  decision: [
+    "This is a good decision.",
+    "I made a quick decision.",
+    "Her decision was brave.",
+    "We need one decision today.",
+    "The decision feels right."
+  ],
+  describe: [
+    "Please describe your room.",
+    "I can describe the picture.",
+    "She describes her weekend.",
+    "He describes the problem clearly.",
+    "Describe it in three words."
+  ],
+  develop: [
+    "I develop better habits.",
+    "She develops her English skills.",
+    "We develop a simple idea.",
+    "He wants to develop confidence.",
+    "Practice helps you develop fluency."
+  ],
+  effort: [
+    "Learning needs effort.",
+    "Your effort is important.",
+    "She made a big effort.",
+    "Small effort every day helps.",
+    "I can see your effort."
+  ],
+  environment: [
+    "I need a quiet environment.",
+    "This environment feels calm.",
+    "A good environment helps me learn.",
+    "The classroom is a friendly environment.",
+    "Music changes the environment."
+  ],
+  experience: [
+    "It was a nice experience.",
+    "I learned from this experience.",
+    "She has travel experience.",
+    "This experience helped me grow.",
+    "Tell me about your experience."
+  ],
+  explain: [
+    "Can you explain this word?",
+    "I explain my answer slowly.",
+    "She explains the rule.",
+    "He can explain it again.",
+    "Please explain your idea."
+  ],
+  focus: [
+    "I focus on one word.",
+    "She needs time to focus.",
+    "We focus on speaking today.",
+    "He cannot focus with noise.",
+    "Focus on the easy part first."
+  ],
+  improve: [
+    "I improve with daily practice.",
+    "She wants to improve her English.",
+    "This exercise can improve memory.",
+    "We improve step by step.",
+    "Reading helps me improve."
+  ],
+  include: [
+    "Please include your name.",
+    "The price can include breakfast.",
+    "I include one example.",
+    "This list should include everyone.",
+    "We include five sentences."
+  ],
+  increase: [
+    "I want to increase my vocabulary.",
+    "Prices increase every year.",
+    "Reading can increase confidence.",
+    "We increase the number slowly.",
+    "Practice can increase speed."
+  ],
+  instead: [
+    "I drink tea instead.",
+    "She walks instead of driving.",
+    "We stayed home instead.",
+    "Use this word instead.",
+    "He smiled instead of speaking."
+  ],
+  knowledge: [
+    "Knowledge grows with practice.",
+    "She has good knowledge of English.",
+    "This book gives useful knowledge.",
+    "I want more knowledge.",
+    "His knowledge helped the team."
+  ],
+  manage: [
+    "I can manage this task.",
+    "She manages her time well.",
+    "We manage the problem together.",
+    "He managed to stay calm.",
+    "Can you manage three words today?"
+  ],
+  mention: [
+    "Please mention your idea.",
+    "She did not mention the time.",
+    "I mention this word often.",
+    "He forgot to mention the plan.",
+    "Mention one example, please."
+  ],
+  necessary: [
+    "Water is necessary.",
+    "It is necessary to practise.",
+    "A ticket is necessary here.",
+    "Sleep is necessary for learning.",
+    "This step is not necessary."
+  ],
+  opportunity: [
+    "This is a good opportunity.",
+    "I have an opportunity to speak.",
+    "She used the opportunity well.",
+    "Every lesson is an opportunity.",
+    "Take the opportunity today."
+  ],
+  ordinary: [
+    "It was an ordinary day.",
+    "This is an ordinary bag.",
+    "He had an ordinary breakfast.",
+    "The room looks ordinary.",
+    "Nothing special, just ordinary."
+  ],
+  participate: [
+    "I participate in the lesson.",
+    "She wants to participate more.",
+    "Everyone can participate.",
+    "He participates in the game.",
+    "Please participate if you can."
+  ],
+  prefer: [
+    "I prefer tea.",
+    "She prefers quiet music.",
+    "We prefer simple examples.",
+    "He prefers learning in the morning.",
+    "Do you prefer coffee or tea?"
+  ],
+  prepare: [
+    "I prepare for the test.",
+    "She prepares dinner.",
+    "We prepare our questions.",
+    "He prepares a short speech.",
+    "Prepare your bag tonight."
+  ],
+  provide: [
+    "The app provides examples.",
+    "They provide free water.",
+    "Can you provide an answer?",
+    "This hotel provides towels.",
+    "We provide help when needed."
+  ],
+  purpose: [
+    "What is the purpose?",
+    "The purpose is practice.",
+    "This tool has one purpose.",
+    "I understand the purpose now.",
+    "The purpose of this is learning."
+  ],
+  realise: [
+    "I realise my mistake.",
+    "She realised the answer.",
+    "We realise it is late.",
+    "He realised the word was easy.",
+    "You will realise it soon."
+  ],
+  reason: [
+    "What is the reason?",
+    "I know the reason.",
+    "She gave a clear reason.",
+    "There is no reason to worry.",
+    "This is the main reason."
+  ],
+  reduce: [
+    "Walking can reduce stress.",
+    "I reduce my screen time.",
+    "We reduce the noise.",
+    "Sleep can reduce mistakes.",
+    "This plan may reduce costs."
+  ],
+  relationship: [
+    "They have a good relationship.",
+    "Our relationship is friendly.",
+    "This relationship is important.",
+    "She has a close relationship with her sister.",
+    "Trust helps a relationship."
+  ],
+  require: [
+    "This job requires patience.",
+    "The task requires time.",
+    "Good writing requires practice.",
+    "The form requires your name.",
+    "Learning requires small steps."
+  ],
+  research: [
+    "The research is interesting.",
+    "I read new research.",
+    "Her research takes time.",
+    "Research can answer questions.",
+    "This research is useful."
+  ],
+  responsible: [
+    "I am responsible for my bag.",
+    "She is responsible at work.",
+    "He feels responsible for the team.",
+    "Be responsible with your time.",
+    "Who is responsible today?"
+  ],
+  result: [
+    "The result is good.",
+    "I like the result.",
+    "Her result was better.",
+    "We wait for the result.",
+    "Practice gives a better result."
+  ],
+  serious: [
+    "This is a serious question.",
+    "He looks serious today.",
+    "It was a serious problem.",
+    "She gave a serious answer.",
+    "Do not make a serious mistake."
+  ],
+  similar: [
+    "These words are similar.",
+    "Our ideas are similar.",
+    "The two pictures look similar.",
+    "This sentence is similar.",
+    "My bag is similar to yours."
+  ],
+  solution: [
+    "We need a solution.",
+    "This solution is simple.",
+    "She found the solution.",
+    "A calm talk can be a solution.",
+    "The solution helped everyone."
+  ],
+  support: [
+    "I support my friend.",
+    "She supports the team.",
+    "We support each other.",
+    "This chair gives good support.",
+    "Your family can support you."
+  ],
+  suggest: [
+    "I suggest a short break.",
+    "She suggests a new plan.",
+    "Can you suggest a word?",
+    "He suggested meeting later.",
+    "I suggest practising now."
+  ],
+  suitable: [
+    "This book is suitable for me.",
+    "The room is suitable for study.",
+    "This example is suitable.",
+    "Is this time suitable?",
+    "The course is suitable for B1."
+  ],
+  successful: [
+    "The meeting was successful.",
+    "She is a successful student.",
+    "Our plan was successful.",
+    "He had a successful day.",
+    "Small practice can be successful."
+  ],
+  therefore: [
+    "It rained; therefore, we stayed home.",
+    "I was tired; therefore, I slept.",
+    "She studied; therefore, she improved.",
+    "The shop was closed; therefore, we left.",
+    "It is late; therefore, we hurry."
+  ],
+  various: [
+    "There are various answers.",
+    "I know various words.",
+    "She tried various ideas.",
+    "We used various examples.",
+    "Various people joined the class."
+  ],
+  wonder: [
+    "I wonder about the answer.",
+    "She wonders why he is late.",
+    "We wonder what happens next.",
+    "He wonders about the weather.",
+    "Do you ever wonder about words?"
+  ]
+};
+
 function createId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
@@ -325,6 +678,9 @@ function readStoredCards(key) {
 
 function normalizeCard(card = {}) {
   const stage = Number(card.stage || 1);
+  const practiceExamples = Array.isArray(card.practiceExamples)
+    ? card.practiceExamples
+    : PRACTICE_EXAMPLES[(card.english || card.q || "").toLowerCase()] || [];
 
   return {
     id: card.id || createId(),
@@ -332,6 +688,7 @@ function normalizeCard(card = {}) {
     german: card.german || card.a || "",
     englishExample: card.englishExample || card.example || "",
     germanExample: card.germanExample || "",
+    practiceExamples,
     stage: Number.isFinite(stage) ? Math.max(1, Math.min(DONE_STAGE, stage)) : 1,
     createdAt: card.createdAt || new Date().toISOString(),
     updatedAt: card.updatedAt || new Date().toISOString()
