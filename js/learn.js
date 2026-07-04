@@ -13,6 +13,7 @@ const SWIPE_DISTANCE = 58;
 const SWIPE_VELOCITY = 0.38;
 const HINT_DISTANCE = 20;
 const TAP_DISTANCE = 12;
+const MIN_CARD_TEXT_SIZE = 20;
 const deckMode = new URLSearchParams(window.location.search).get("deck");
 const isBrainMode = deckMode === "brain";
 const isLearnedMode = deckMode === "learned";
@@ -47,6 +48,26 @@ function setExample(element, text) {
   if (!element) return;
   element.textContent = text || "";
   element.hidden = !text;
+}
+
+function fitCardText(element) {
+  if (!element) return;
+
+  element.style.fontSize = "";
+  let fontSize = parseFloat(window.getComputedStyle(element).fontSize);
+  if (!Number.isFinite(fontSize) || element.clientWidth === 0) return;
+
+  while (element.scrollWidth > element.clientWidth && fontSize > MIN_CARD_TEXT_SIZE) {
+    fontSize -= 1;
+    element.style.fontSize = `${fontSize}px`;
+  }
+}
+
+function fitVisibleCardText() {
+  window.requestAnimationFrame(() => {
+    fitCardText(word);
+    fitCardText(answer);
+  });
 }
 
 function loadFrontLanguage() {
@@ -154,6 +175,7 @@ function loadCard(excludeId = null) {
   answer.textContent = startsWithEnglish ? currentCard.german : currentCard.english;
   setExample(frontExample, startsWithEnglish ? currentCard.englishExample : currentCard.germanExample);
   setExample(backExample, startsWithEnglish ? currentCard.germanExample : currentCard.englishExample);
+  fitVisibleCardText();
   if (stageLabel) {
     stageLabel.textContent = `Stufe ${currentCard.stage} von ${MAX_STAGE}`;
   }
